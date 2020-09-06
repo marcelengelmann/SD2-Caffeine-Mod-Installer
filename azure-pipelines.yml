@@ -25,6 +25,8 @@ variables:
 steps:
 - checkout: self
   persistCredentials: true
+  clean: true
+
 - task: NuGetToolInstaller@1
 
 - task: NuGetCommand@2
@@ -48,5 +50,8 @@ steps:
       del "Latest Version\*"
       move "SD2-Caffeine-Mod-Installer\bin\Release\*" "Latest Version"
       cd "Latest Version"
+      git config --global user.email "marcel.engelmann@freenet.de"
+      git config --global user.name "Death-Truction"
       git add *
-      git commit -m "Updated File"
+      git commit -m "Updated File [skip ci]"
+      git push
