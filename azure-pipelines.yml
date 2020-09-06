@@ -30,7 +30,6 @@ steps:
     restoreSolution: '$(solution)'
 
 - task: VSBuild@1
-  condition: success()
   inputs:
     solution: '$(solution)'
     platform: '$(buildPlatform)'
