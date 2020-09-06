@@ -4,7 +4,11 @@
 # https://docs.microsoft.com/azure/devops/pipelines/apps/windows/dot-net
 
 trigger:
-- master
+  batch: true
+   branches:
+    include:
+    - master
+    - Pipeline-Testing
 
 pool:
   vmImage: 'windows-latest'
