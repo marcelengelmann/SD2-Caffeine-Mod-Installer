@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:SD2_Caffeine_Mod_Installer"
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         mc:Ignorable="d"
-        Title="MainWindow" Height="300" Width="450" ResizeMode="NoResize" AllowsTransparency="True" WindowStyle="None">
+        Title="MainWindow" Height="300" Width="450" ResizeMode="NoResize" AllowsTransparency="True" WindowStyle="None" WindowStartupLocation="CenterScreen">
     <Window.DataContext>
         <local:MainWindowViewModel />
     </Window.DataContext>
@@ -76,7 +76,7 @@
                        FontSize="18">
                 </Label>
                 <TextBox Text="{Binding InstallationPath}"
-                         Foreground="{DynamicResource SecondaryAccentBrush}" 
+                         Foreground="White" 
                          Style="{DynamicResource MaterialDesignOutlinedTextFieldTextBox}"
                          HorizontalAlignment="Stretch"
                          Margin="10 0"
@@ -87,14 +87,12 @@
             </StackPanel>
         </Grid>
         <!-- Install / uninstall button -->
-        <StackPanel Grid.Row="2"
-                    Orientation="Horizontal"
-                    Margin="20 10"
-                    HorizontalAlignment="Center"
-                    VerticalAlignment="Center">
-            <Button Content="{Binding InstallButtonText}"
+        <Button Grid.Row="2"
+                    Margin="10 10"
+                    HorizontalAlignment="Stretch"
+                    VerticalAlignment="Bottom"
+                    Content="{Binding InstallButtonText}"
                     Command="{Binding InstallUninstallModCommand}">
-            </Button>
-        </StackPanel>
+        </Button>
     </Grid>
 </Window>
