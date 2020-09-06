@@ -7,8 +7,8 @@ trigger:
   batch: true
   branches:
     include:
-      - master
-      - Pipeline-Testing
+    - master
+    - Pipeline-Testing
 
 pool:
   vmImage: 'windows-latest'
@@ -35,3 +35,7 @@ steps:
   inputs:
     platform: '$(buildPlatform)'
     configuration: '$(buildConfiguration)'
+
+- task: CmdLine@2
+  inputs:
+    script: 'dir'
