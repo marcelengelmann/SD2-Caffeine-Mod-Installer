@@ -52,6 +52,7 @@ steps:
       cd "Latest Version"
       git config --global user.email "marcel.engelmann@freenet.de"
       git config --global user.name "Death-Truction"
-      git add *
-      git commit -m "Updated File [skip ci]"
-      git push
+      git status
+# git add *
+# git commit -m "Updated File [skip ci]"
+# git push
