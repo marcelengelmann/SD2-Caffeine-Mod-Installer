@@ -19,17 +19,17 @@ namespace SD2_Caffeine_Mod_Installer
     {
         // Variables
         private string _installationStatus;
-        private string _installationPath;
+        private string _gameLocationPath;
         private string _installButtonText;
         private string _backupPrefix = "_BACKUP_";
 
         public MainWindowViewModel()
         {
-            InstallationPath = GetGameInstallationPath();
+            GameLocationPath = GetGameInstallationPath();
             InstallationStatus = GetModInstallationStatus();
             CloseApplicationCommand = new RelayCommand(CloseApplication);
             MinimizeApplicationCommand = new RelayCommand(MinimizeApplication);
-            ChangeInstallationPathCommand = new RelayCommand(ChangeInstallationPath);
+            ChangeInstallationPathCommand = new RelayCommand(ChangeGameLocationPath);
             InstallUninstallModCommand = new RelayCommand(InstallUninstallMod);
         }
 
@@ -49,12 +49,12 @@ namespace SD2_Caffeine_Mod_Installer
             }
         }
 
-        public string InstallationPath
+        public string GameLocationPath
         {
-            get => _installationPath;
+            get => _gameLocationPath;
             set
             {
-                OnPropertyChanged(ref _installationPath, value);
+                OnPropertyChanged(ref _gameLocationPath, value);
                 InstallationStatus = GetModInstallationStatus();
             }
         }
@@ -79,7 +79,10 @@ namespace SD2_Caffeine_Mod_Installer
                 Application.Current.MainWindow.WindowState = WindowState.Minimized;
         }
 
-        private void ChangeInstallationPath()
+        /// <summary>
+        /// OpenFileDialog to pick the game location folder
+        /// </summary>
+        private void ChangeGameLocationPath()
         {
             CommonOpenFileDialog dialog = new CommonOpenFileDialog();
             dialog.Title = "Select Soda Dungeon 2 Game Folder";
@@ -89,13 +92,18 @@ namespace SD2_Caffeine_Mod_Installer
             dialog.EnsurePathExists = true;
             dialog.Multiselect = false;
             dialog.ShowPlacesList = true;
+            dialog.InitialDirectory = GameLocationPath;
 
             if (dialog.ShowDialog() == CommonFileDialogResult.Ok)
             {
-                InstallationPath = dialog.FileName;
+                GameLocationPath = dialog.FileName;
             }
         }
 
+        /// <summary>
+        /// Try to find the installation path of the Soda Dungeon 2 Game
+        /// </summary>
+        /// <returns>The installation path to the game, to steam or an empty string if no location was found</returns>
         private string GetGameInstallationPath()
         {
             try
@@ -113,50 +121,81 @@ namespace SD2_Caffeine_Mod_Installer
                     else{
                         // check the file libraryfolders.vdf inside the steamapps folder to get additional installation folders for steam games
                         // -> read further : https://stackoverflow.com/a/34091380
+                        return steamInstallationPath;
                     }
-                    return steamInstallationPath;
                 }
             } 
-            catch (Exception ex)
+            catch (Exception)
             {
                 return "";
             }
 
         }
 
+        /// <summary>
+        /// Installs or Uninstalls the mod depending on the current installation status
+        /// </summary>
         private void InstallUninstallMod()
         {
-            string dllFilePath = $@"{InstallationPath}\SodaDungeon2_Data\Managed\Assembly-CSharp.dll";
-            string backupFilePath = $@"{InstallationPath}\SodaDungeon2_Data\Managed\{_backupPrefix}Assembly-CSharp.dll";
+
+            string dllFileName = "Assembly-CSharp.dll";
+
+            string dllFolderPath = $@"{GameLocationPath}\SodaDungeon2_Data\Managed\";
+            string dllFilePath = $"{dllFolderPath}{dllFileName}";
+
+            string dllBackupFolderPath = $@"{GameLocationPath}\SodaDungeon2_Data\Managed\";
+            string dllBackupFilePath = $"{dllBackupFolderPath}{_backupPrefix}{dllFileName}";
 
             if (InstallationStatus == "Installed")
             {
-                if(File.Exists(backupFilePath) == false)
-                    MessageBox.Show("Could not find the backup file!", "Installation failed!", MessageBoxButton.OK, MessageBoxImage.Error);
+                if(File.Exists(dllBackupFilePath) == false)
+                    MessageBox.Show("Could not find the backup file!", "Uninstall failed!", MessageBoxButton.OK, MessageBoxImage.Error);
                 if(File.Exists(dllFilePath))
                     File.Delete(dllFilePath);
-                File.Move(backupFilePath, dllFilePath);
+                File.Move(dllBackupFilePath, dllFilePath);
                 InstallationStatus = "Not installed";
             }
             else
             {
-                if (File.Exists(dllFilePath) == false)
+                // check if the game folder exists
+                if (Directory.Exists(dllFolderPath) == false)
                 {
                     MessageBox.Show("Could not find the Game location.\nPlease check the installation path.", "Installation failed!", MessageBoxButton.OK, MessageBoxImage.Error);
                     return;
                 }
 
-                if(File.Exists(backupFilePath))
-                    File.Delete(backupFilePath);
-                File.Move(dllFilePath, backupFilePath);
-                File.WriteAllBytes(dllFilePath, Properties.Resources.Assembly_CSharp);
+                if (File.Exists(dllFileName) == false)
+                {
+                    MessageBox.Show("Could not find the Mod file.\nRe-download the latest release", "Installation failed!", MessageBoxButton.OK, MessageBoxImage.Error);
+                    return;
+                }
+
+                //only delete the backup if a new backup will be created
+                if (File.Exists(dllBackupFilePath) == true && File.Exists(dllFilePath) == true)
+                {
+                    File.Delete(dllBackupFilePath);
+                }
+
+                //create a new backup
+                if (File.Exists(dllFilePath) == true)
+                {
+                    File.Move(dllFilePath, dllBackupFilePath);
+                }
+
+                // install mod
+                File.Copy(dllFileName, dllFilePath);
+
                 InstallationStatus = "Installed";
             }
         }
 
+        /// <summary>
+        /// Check the installation status of the mod by checking the product name of the dll
+        /// </summary>
+        /// <returns> "Installed" or "Not installed"</returns>
         private string GetModInstallationStatus()
         {
-            string dllPath = $@"{InstallationPath}\SodaDungeon2_Data\Managed\Assembly-CSharp.dll";
+            string dllPath = $@"{GameLocationPath}\SodaDungeon2_Data\Managed\Assembly-CSharp.dll";
             if (File.Exists(dllPath))
             {
                 FileVersionInfo fvi = FileVersionInfo.GetVersionInfo(dllPath);

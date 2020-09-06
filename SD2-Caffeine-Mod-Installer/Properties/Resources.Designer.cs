@@ -59,15 +59,5 @@ namespace SD2_Caffeine_Mod_Installer.Properties {
                 resourceCulture = value;
             }
         }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Byte[].
-        /// </summary>
-        internal static byte[] Assembly_CSharp {
-            get {
-                object obj = ResourceManager.GetObject("Assembly_CSharp", resourceCulture);
-                return ((byte[])(obj));
-            }
-        }
     }
 }

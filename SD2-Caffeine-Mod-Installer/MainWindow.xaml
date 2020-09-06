@@ -72,10 +72,10 @@
             </StackPanel>
             <StackPanel Grid.Row="1" VerticalAlignment="Bottom">
                 <Label 
-                       Content="Installation Path:"
+                       Content="Soda Dungeon 2 Location:"
                        FontSize="18">
                 </Label>
-                <TextBox Text="{Binding InstallationPath}"
+                <TextBox Text="{Binding GameLocationPath}"
                          Foreground="White" 
                          Style="{DynamicResource MaterialDesignOutlinedTextFieldTextBox}"
                          HorizontalAlignment="Stretch"
