@@ -9,6 +9,9 @@ trigger:
     include:
     - master
     - Pipeline-Testing
+  paths:
+    include:
+      - SD2-Caffeine-Mod-Installer/*
 
 pool:
   vmImage: 'windows-latest'
@@ -26,6 +29,7 @@ steps:
     restoreSolution: '$(solution)'
 
 - task: VSBuild@1
+  condition: success()
   inputs:
     solution: '$(solution)'
     platform: '$(buildPlatform)'
@@ -38,4 +42,9 @@ steps:
 
 - task: CmdLine@2
   inputs:
-    script: 'dir'
+    script: |
+      del "Latest Version\*"
+      move "SD2-Caffeine-Mod-Installer\bin\Release\*" "Latest Version"
+      cd "Latest Version"
+      git add *
+      git commit -m "Updated File"
