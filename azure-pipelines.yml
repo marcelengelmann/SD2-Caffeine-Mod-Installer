@@ -50,9 +50,11 @@ steps:
       git config --global user.email "marcel.engelmann@freenet.de"
       git config --global user.name "Death-Truction"
       git status
+      git switch $(Build.SourceBranchName)
       del "Latest Version\*"
       move "SD2-Caffeine-Mod-Installer\bin\Release\*" "Latest Version"
       cd "Latest Version"
-# git add *
-# git commit -m "Updated File [skip ci]"
-# git push
+
+      git add *
+      git commit -m "Updated File [skip ci]"
+      git push
