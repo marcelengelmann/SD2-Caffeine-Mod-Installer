@@ -5,10 +5,10 @@
 
 trigger:
   batch: true
-   branches:
+  branches:
     include:
-    - master
-    - Pipeline-Testing
+      - master
+      - Pipeline-Testing
 
 pool:
   vmImage: 'windows-latest'
