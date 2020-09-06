@@ -1,14 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
-using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
-using MaterialDesignThemes.Wpf;
 using Microsoft.Win32;
 using Microsoft.WindowsAPICodePack.Dialogs;
 using TvSeriesCalendar.UtilityClasses;
@@ -21,7 +15,7 @@ namespace SD2_Caffeine_Mod_Installer
         private string _installationStatus;
         private string _gameLocationPath;
         private string _installButtonText;
-        private string _backupPrefix = "_BACKUP_";
+        private const string BackupPrefix = "_BACKUP_";
 
         public MainWindowViewModel()
         {
@@ -144,12 +138,17 @@ namespace SD2_Caffeine_Mod_Installer
             string dllFilePath = $"{dllFolderPath}{dllFileName}";
 
             string dllBackupFolderPath = $@"{GameLocationPath}\SodaDungeon2_Data\Managed\";
-            string dllBackupFilePath = $"{dllBackupFolderPath}{_backupPrefix}{dllFileName}";
+            string dllBackupFilePath = $"{dllBackupFolderPath}{BackupPrefix}{dllFileName}";
 
             if (InstallationStatus == "Installed")
             {
-                if(File.Exists(dllBackupFilePath) == false)
-                    MessageBox.Show("Could not find the backup file!", "Uninstall failed!", MessageBoxButton.OK, MessageBoxImage.Error);
+                if (File.Exists(dllBackupFilePath) == false)
+                {
+                    MessageBox.Show("Could not find the backup file!", "Uninstall failed!", MessageBoxButton.OK,
+                        MessageBoxImage.Error);
+                    return;
+                }
+
                 if(File.Exists(dllFilePath))
                     File.Delete(dllFilePath);
                 File.Move(dllBackupFilePath, dllFilePath);
