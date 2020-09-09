@@ -47,6 +47,8 @@ steps:
 - task: CmdLine@2
   inputs:
     script: |
+      git config --global user.email "$env:GIT_EMAIL"
+      git config --global user.name "$env:GIT_USER"
       git status
       git switch $(Build.SourceBranchName)
       del "Latest Version\*"
@@ -56,3 +58,6 @@ steps:
       git add *
       git commit -m "Updated File [skip ci]"
       git push
+  env:
+     GIT_USER: $(GIT-USER)
+     GIT_EMAIL: $(GIT-EMAIL)
