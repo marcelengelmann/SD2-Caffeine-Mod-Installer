@@ -47,8 +47,8 @@ steps:
 - task: CmdLine@2
   inputs:
     script: |
-      git config --global user.email "$env:GIT_EMAIL"
-      git config --global user.name "$env:GIT_USER"
+      git config --global user.email $GIT_EMAIL
+      git config --global user.name $GIT_USER
       git status
       git switch $(Build.SourceBranchName)
       del "Latest Version\*"
